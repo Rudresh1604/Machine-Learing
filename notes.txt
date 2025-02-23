@@ -1,0 +1,1 @@
+Data ingestion = The process where we read the data from databse or dataset is termed as datainjection

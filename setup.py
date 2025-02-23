@@ -5,17 +5,21 @@ HYPEN_E_DOT = '-e .'
 # The -e . in requirement will automatically trigger this setup.py file
 
 
-def get_requirements(filepath:str)->List[str]:
-    '''This function will return list of requirements'''
-    requirements=[]
+def get_requirements(filepath: str):
+    '''This function will return a list of requirements'''
+    requirements = []
+    print("Setup is running")
+    
     with open(filepath) as file_obj:
         requirements = file_obj.readlines()
-        requirements = [req.replace("\n","") for req in requirements]
-
-        if HYPEN_E_DOT in requirements:
-            requirements.remove(HYPEN_E_DOT)
+        requirements = [req.strip() for req in requirements]  # Remove spaces/newlines
     
+    # Ensure no empty strings or unwanted dependencies like warnings
+    requirements = [req for req in requirements if req and req != '-e .']
+
+    print("Requirements are:", requirements)
     return requirements
+
 
 setup(
     name='mlproject',
@@ -23,5 +27,5 @@ setup(
     author='Rudresh',
     author_email='rudreshdharkar@gmail.com',
     packages=find_packages(),
-    install_requires=get_requirements('requirement.txt')
+    install_requires=get_requirements('requirement.txt')  # Ensure file name matches
 )
