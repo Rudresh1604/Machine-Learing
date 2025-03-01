@@ -8,6 +8,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")
 
 from src.exception import CustomException
 from src.logger import logging
+from src.components.data_transformation import DataTransformation
+from src.components.data_transformation import DataTransformationConfig
+from src.components.model_trainer import ModelTrainerConfig
+from src.components.model_trainer import ModelTrainer
+
+
 import pandas as pd 
 
 
@@ -34,6 +40,7 @@ class DataIngestion:
             logging.info("Read the dataset")
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
+            # save the raw data at this location
             df.to_csv(self.ingestion_config.raw_data_path,index=False)
             logging.info("Train Test Split Initiated")
             train_set,test_set = train_test_split(df,test_size=0.2,random_state=42)
@@ -49,7 +56,13 @@ class DataIngestion:
             raise CustomException(e,sys)
 
 
-# if __name__ == '__main__':
-#     obj = DataIngestion()
-#     obj.initiate_data_ingestion()
+if __name__=="__main__":
+    obj=DataIngestion()
+    train_data,test_data=obj.initiate_data_ingestion()
+
+    data_transformation=DataTransformation()
+    train_arr,test_arr,_=data_transformation.initiate_data_transformation(train_data,test_data)
+
+    modeltrainer=ModelTrainer()
+    print(modeltrainer.initiate_model_trainer(train_arr,test_arr))
             
